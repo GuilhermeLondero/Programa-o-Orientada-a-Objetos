@@ -1,0 +1,89 @@
+class AssentoOcupadoException extends Exception {
+    public AssentoOcupadoException(String mensagem) {
+        super(mensagem);
+    }
+}
+
+class Voo {
+    private String numeroDoVoo;
+    private String destino;
+    private boolean[] assentos;
+
+    public Voo(String numeroDoVoo, String destino) {
+        this.numeroDoVoo = numeroDoVoo;
+        this.destino = destino;
+        this.assentos = new boolean[100];
+    }
+
+    public String getNumeroDoVoo() {
+        return numeroDoVoo;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void reservarAssento(int numeroAssento) throws AssentoOcupadoException {
+        if (numeroAssento < 1 || numeroAssento > 100) {
+            throw new IllegalArgumentException(
+                "Número de assento inválido: " + numeroAssento + ". Use 1 a 100."
+            );
+        }
+
+        int indice = numeroAssento - 1;
+
+        if (assentos[indice]) {
+            throw new AssentoOcupadoException(
+                "O assento " + numeroAssento + " já está ocupado."
+            );
+        }
+
+        assentos[indice] = true;
+        System.out.println("Assento " + numeroAssento + " reservado com sucesso.");
+    }
+}
+
+public class Exercicio1 {
+    public static void main(String[] args) {
+        Voo voo = new Voo("GOL1234", "Florianópolis");
+
+        System.out.println("Voo: " + voo.getNumeroDoVoo() + " | Destino: " + voo.getDestino());
+        System.out.println("--------------------------------------");
+
+        try {
+            voo.reservarAssento(15);
+        } catch (AssentoOcupadoException | IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        try {
+            voo.reservarAssento(15);
+        } catch (AssentoOcupadoException e) {
+            System.out.println("AssentoOcupadoException -> " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException -> " + e.getMessage());
+        }
+
+        try {
+            voo.reservarAssento(150);
+        } catch (AssentoOcupadoException e) {
+            System.out.println("AssentoOcupadoException -> " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException -> " + e.getMessage());
+        }
+
+        try {
+            voo.reservarAssento(42);
+        } catch (AssentoOcupadoException | IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        try {
+            voo.reservarAssento(0);
+        } catch (AssentoOcupadoException e) {
+            System.out.println("AssentoOcupadoException -> " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException -> " + e.getMessage());
+        }
+    }
+}

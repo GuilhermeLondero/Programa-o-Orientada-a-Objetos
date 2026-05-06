@@ -1,0 +1,100 @@
+import java.util.ArrayList;
+import java.util.List;
+
+abstract class ItemCardapio {
+    protected String nome;
+    protected double precoBase;
+
+    public ItemCardapio(String nome, double precoBase) {
+        this.nome = nome;
+        this.precoBase = precoBase;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public double getPrecoBase() {
+        return precoBase;
+    }
+
+    public abstract double calcularPrecoFinal();
+}
+
+class PratoPrincipal extends ItemCardapio {
+    private int tempoPreparo;
+
+    public PratoPrincipal(String nome, double precoBase, int tempoPreparo) {
+        super(nome, precoBase);
+        this.tempoPreparo = tempoPreparo;
+    }
+
+    public int getTempoPreparo() {
+        return tempoPreparo;
+    }
+
+    @Override
+    public double calcularPrecoFinal() {
+        return precoBase;
+    }
+}
+
+class Bebida extends ItemCardapio {
+    private boolean isAlcoolica;
+
+    public Bebida(String nome, double precoBase, boolean isAlcoolica) {
+        super(nome, precoBase);
+        this.isAlcoolica = isAlcoolica;
+    }
+
+    public boolean isAlcoolica() {
+        return isAlcoolica;
+    }
+
+    @Override
+    public double calcularPrecoFinal() {
+        if (isAlcoolica) {
+            return precoBase * 1.10;
+        }
+        return precoBase;
+    }
+}
+
+class Pedido {
+    private List<ItemCardapio> itens;
+
+    public Pedido() {
+        this.itens = new ArrayList<>();
+    }
+
+    public void adicionarItem(ItemCardapio item) {
+        itens.add(item);
+    }
+
+    public double fecharConta() {
+        double total = 0;
+        System.out.println("======== Conta do Pedido ========");
+        for (ItemCardapio item : itens) {
+            double preco = item.calcularPrecoFinal();
+            System.out.printf("%-25s R$ %6.2f%n", item.getNome(), preco);
+            total += preco;
+        }
+        System.out.println("---------------------------------");
+        System.out.printf("%-25s R$ %6.2f%n", "TOTAL", total);
+        return total;
+    }
+}
+
+public class Exercicio2 {
+    public static void main(String[] args) {
+        Pedido pedido = new Pedido();
+
+        pedido.adicionarItem(new PratoPrincipal("Filé Mignon ao molho", 65.90, 25));
+        pedido.adicionarItem(new PratoPrincipal("Risoto de Funghi", 48.00, 20));
+        pedido.adicionarItem(new Bebida("Suco de Laranja", 8.00, false));
+        pedido.adicionarItem(new Bebida("Caipirinha", 22.00, true));
+        pedido.adicionarItem(new Bebida("Vinho Tinto", 35.00, true));
+
+        pedido.fecharConta();
+    }
+}
